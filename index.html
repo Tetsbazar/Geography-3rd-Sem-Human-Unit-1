@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bazar — Human Geography 3rd Sem | Unit 1 | জনসংখ্যা</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Syne',sans-serif;background:#f0faf4;min-height:100vh;color:#1c2e24}
+.top-bar{background:#1a7a4a;padding:0.8rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.top-logo{font-size:1.1rem;font-weight:800;color:white}.top-logo span{color:#f9a825}
+.timer-box{background:rgba(255,255,255,0.15);border-radius:8px;padding:0.4rem 1rem;display:flex;align-items:center;gap:6px;font-size:1rem;font-weight:700;color:white}
+.timer-box.danger{background:#dc3545}
+.main{max-width:820px;margin:0 auto;padding:1.5rem 1rem}
+.hub-header{text-align:center;margin-bottom:2rem}
+.hub-header h1{font-family:'Tiro Bangla',serif;font-size:1.8rem;color:#1c2e24}
+.hub-header p{font-family:'Tiro Bangla',serif;font-size:0.95rem;color:#5a7a66;margin-top:0.3rem}
+.set-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem}
+.set-card{background:white;border-radius:14px;padding:1.5rem;border:1.5px solid #c5dccb;transition:all 0.2s;cursor:pointer;color:#1c2e24;box-shadow:0 2px 8px rgba(26,122,74,0.06)}
+.set-card:hover{transform:translateY(-3px);border-color:#1a7a4a;box-shadow:0 6px 20px rgba(26,122,74,0.12)}
+.set-card .icon{font-size:2.2rem;margin-bottom:0.3rem}
+.set-card .set-num{font-weight:700;font-size:1.1rem;color:#1a7a4a}
+.set-card .set-title{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin:0.2rem 0 0.5rem}
+.set-card .set-meta{display:flex;gap:1rem;font-size:0.7rem;color:#5a7a66}
+.set-card .set-meta span{background:#f0faf4;padding:0.15rem 0.6rem;border-radius:4px}
+.set-card .attempt-badge{font-size:0.7rem;color:#dc3545;font-weight:600;margin-top:0.3rem}
+.set-card.locked{opacity:0.5;cursor:not-allowed;border-color:#dc3545}
+.set-card.locked:hover{transform:none;box-shadow:none}
+.quiz-info{background:white;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem;border:1px solid #c5dccb;display:flex;gap:1rem;flex-wrap:wrap}
+.info-item{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66}
+.info-item strong{color:#1a7a4a}
+.progress-wrap{background:#c5dccb;border-radius:4px;height:6px;margin-bottom:1.2rem;overflow:hidden}
+.progress-fill{height:100%;background:#1a7a4a;border-radius:4px;transition:width 0.3s}
+.q-card{background:white;border-radius:14px;padding:1.4rem;margin-bottom:1rem;border:1px solid #c5dccb;box-shadow:0 2px 10px rgba(26,122,74,0.06)}
+.q-num{font-size:0.75rem;font-weight:700;color:#e8730a;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.6rem}
+.q-text{font-family:'Tiro Bangla',serif;font-size:1rem;color:#1c2e24;line-height:1.7;margin-bottom:1.1rem}
+.opts{display:flex;flex-direction:column;gap:0.6rem}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:0.7rem 1rem;border:1.5px solid #c5dccb;border-radius:10px;cursor:pointer;transition:all 0.15s;background:white;text-align:left;width:100%;font-family:inherit}
+.opt:hover:not(.disabled){border-color:#1a7a4a;background:#f0faf4}
+.opt-circle{min-width:28px;height:28px;border-radius:50%;border:1.5px solid #c5dccb;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#5a7a66;flex-shrink:0;transition:all 0.15s}
+.opt-text{font-family:'Tiro Bangla',serif;font-size:0.92rem;color:#1c2e24;line-height:1.6;padding-top:2px}
+.opt.correct{border-color:#1a7a4a;background:#e8f7ef}
+.opt.correct .opt-circle{background:#1a7a4a;border-color:#1a7a4a;color:white}
+.opt.wrong{border-color:#dc3545;background:#fdf0f0}
+.opt.wrong .opt-circle{background:#dc3545;border-color:#dc3545;color:white}
+.opt.disabled{cursor:default}
+.explanation{background:#f0faf4;border-left:3px solid #1a7a4a;border-radius:0 8px 8px 0;padding:0.8rem 1rem;margin-top:0.8rem;display:none}
+.explanation.show{display:block}
+.explanation p{font-family:'Tiro Bangla',serif;font-size:0.88rem;color:#2c4035;line-height:1.7}
+.explanation strong{color:#1a7a4a}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:0.8rem}
+.score-show{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66}
+.next-btn{background:#1a7a4a;color:white;border:none;padding:0.6rem 1.4rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:0.9rem;cursor:pointer;transition:all 0.15s}
+.next-btn:hover{background:#2aad68}
+.next-btn:disabled{background:#c5dccb;cursor:default}
+.result-wrap{background:white;border-radius:14px;padding:2rem;text-align:center;border:1px solid #c5dccb;display:none}
+.result-wrap.show{display:block}
+.result-icon{font-size:3rem;margin-bottom:0.5rem}
+.result-score{font-size:3.5rem;font-weight:800;color:#1a7a4a}
+.result-total{font-size:1rem;color:#5a7a66;margin-bottom:0.5rem;font-family:'Tiro Bangla',serif}
+.result-grade{font-size:1.2rem;font-weight:600;color:#1c2e24;margin-bottom:1.5rem;font-family:'Tiro Bangla',serif}
+.result-bars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem;margin-bottom:1.5rem}
+.result-bar{background:#f0faf4;border-radius:10px;padding:0.8rem;text-align:center}
+.rb-num{font-size:1.4rem;font-weight:800}
+.rb-label{font-family:'Tiro Bangla',serif;font-size:0.8rem;color:#5a7a66;margin-top:0.2rem}
+.retry-btn{background:#1a7a4a;color:white;border:none;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer;margin-right:0.5rem}
+.retry-btn:disabled{background:#c5dccb;cursor:not-allowed}
+.review-btn{background:white;color:#1a7a4a;border:1.5px solid #1a7a4a;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer}
+.back-btn{background:white;color:#5a7a66;border:1.5px solid #c5dccb;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer;margin-top:0.6rem}
+.login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:999;display:none}
+.login-overlay.active{display:flex}
+.login-modal{background:white;border-radius:16px;padding:2.5rem;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-modal h2{font-family:'Tiro Bangla',serif;font-size:1.3rem;color:#1c2e24;text-align:center;margin-bottom:0.3rem}
+.login-modal p{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;text-align:center;margin-bottom:1.5rem}
+.login-modal label{font-size:0.8rem;font-weight:600;color:#1c2e24;display:block;margin-bottom:0.3rem}
+.login-modal input{width:100%;padding:0.7rem 1rem;border:1.5px solid #c5dccb;border-radius:8px;font-size:0.95rem;margin-bottom:1rem;font-family:'Tiro Bangla',serif}
+.login-modal input:focus{outline:none;border-color:#1a7a4a}
+.login-modal .login-btn{width:100%;background:#1a7a4a;color:white;border:none;padding:0.75rem;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tiro Bangla',serif}
+.login-modal .login-btn:hover{background:#2aad68}
+.login-modal .login-btn:disabled{background:#c5dccb;cursor:not-allowed}
+.login-modal .error-msg{color:#dc3545;font-size:0.8rem;text-align:center;margin-top:0.5rem;font-family:'Tiro Bangla',serif;display:none}
+.login-modal .limit-info{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;font-family:'Tiro Bangla',serif;font-size:0.8rem;color:#856404;display:none}
+.login-modal .set-name-display{background:#f0faf4;border-radius:8px;padding:0.5rem;text-align:center;margin-bottom:1rem;font-family:'Tiro Bangla',serif;font-size:0.9rem;color:#1a7a4a;font-weight:600}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-logo">Test <span>Bazar</span></div>
+  <div class="timer-box" id="timerBox">⏱ <span id="timerDisplay">10:00</span></div>
+</div>
+
+<div class="main">
+
+  <!-- ===== LOGIN OVERLAY ===== -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-modal">
+      <h2>🔐 লগইন করুন</h2>
+      <p>Test শুরু করতে আপনার ইউজারনেম ও পাসওয়ার্ড দিন</p>
+      <div class="set-name-display" id="loginSetName">📚 Set 1</div>
+      <div class="limit-info" id="limitInfo">⚠️ <span id="limitMsg"></span></div>
+      <label>ইউজারনেম</label>
+      <input type="text" id="loginUsername" placeholder="আপনার ইউজারনেম লিখুন">
+      <label>পাসওয়ার্ড</label>
+      <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড লিখুন" onkeydown="if(event.key==='Enter') doLoginFromSet()">
+      <button class="login-btn" id="loginBtn" onclick="doLoginFromSet()">✅ লগইন করে Test শুরু করো</button>
+      <div class="error-msg" id="loginError">❌ ভুল ইউজারনেম বা পাসওয়ার্ড। আবার চেষ্টা করুন।</div>
+    </div>
+  </div>
+
+  <!-- ===== HUB PAGE ===== -->
+  <div id="hubPage">
+    <div class="hub-header">
+      <h1>📚 মানবীয় ভূগোল — Unit 1: জনসংখ্যা (Population)</h1>
+      <p>জনসংখ্যার প্রাথমিক ধারণা, ঘনত্ব, বণ্টন, প্রজনন, মরণশীলতা, পরিব্রাজন ও বয়স-লিঙ্গ পিরামিড — নিচের সেটগুলো থেকে বেছে নিন। Test শুরু করতে সেটে ক্লিক করুন এবং লগইন করুন।</p>
+      <div id="hubUserInfo" style="font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin-top:0.5rem;"></div>
+    </div>
+    <div class="set-grid" id="setGrid"></div>
+  </div>
+
+  <!-- ===== TEST AREA ===== -->
+  <div id="testArea" class="hidden">
+    <div class="quiz-info">
+      <div class="info-item">🎓 <strong id="testSetName">মানবীয় ভূগোল</strong> — Unit 1 | <span id="testSetLabel">Set 1</span></div>
+      <div class="info-item">📝 <span id="testTopic">জনসংখ্যা</span></div>
+    </div>
+    <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="q-card" id="qCard">
+      <div class="q-num" id="qNum">প্রশ্ন ১ / ১৫</div>
+      <div class="q-text" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+      <div class="explanation" id="explanation"><p id="explanationText"></p></div>
+      <div class="nav-row">
+        <div class="score-show" id="scoreShow">সঠিক: ০ | ভুল: ০</div>
+        <button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>পরবর্তী →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT AREA ===== -->
+  <div class="result-wrap" id="resultWrap">
+    <div class="result-icon" id="resultIcon"></div>
+    <div class="result-score" id="finalScore"></div>
+    <div class="result-total">/ ১৫</div>
+    <div class="result-grade" id="resultGrade"></div>
+    <div class="result-bars">
+      <div class="result-bar"><div class="rb-num" id="rbCorrect" style="color:#1a7a4a"></div><div class="rb-label">সঠিক</div></div>
+      <div class="result-bar"><div class="rb-num" id="rbWrong" style="color:#dc3545"></div><div class="rb-label">ভুল</div></div>
+      <div class="result-bar"><div class="rb-num" id="rbPct" style="color:#e8730a"></div><div class="rb-label">স্কোর</div></div>
+    </div>
+    <div id="attemptInfo" style="font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin-bottom:1rem;"></div>
+    <button class="retry-btn" id="retryBtn" onclick="retryQuiz()">আবার চেষ্টা করো</button>
+    <button class="review-btn" onclick="showReview()">উত্তর দেখো</button>
+    <br>
+    <button class="back-btn" onclick="goToHub()">← Hub এ ফিরে যাও</button>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+//  ইউজার ডেটাবেস
+// ============================================================
+const MAX_ATTEMPTS = 10;
+const TOTAL_SETS = 7;
+
+const userData = [
+  {username:"alfa_romeo", password:"ARx7P29m"},
+  {username:"santos", password:"St8Qv41L"},
+  {username:"falcon", password:"Fc3MZ92k"},
+  {username:"titan", password:"Ti6Rp84W"},
+  {username:"matrix", password:"Mx5Kd73N"},
+  {username:"phoenix", password:"Ph9Js28V"},
+  {username:"cobra", password:"Cb4Ln65X"},
+  {username:"shadow", password:"Sh7Wp19Q"},
+  {username:"rocket", password:"Rc2Ty86M"},
+  {username:"warrior", password:"Wr8Az34K"},
+  {username:"eagle", password:"Eg5Xq72P"},
+  {username:"thunder", password:"Th1Vk93R"},
+  {username:"dragon", password:"Dr6Hm48N"},
+  {username:"panther", password:"Pa9Nc25J"},
+  {username:"viking", password:"Vi4Qs87L"},
+  {username:"hunter", password:"Hu7Bp31X"},
+  {username:"legend", password:"Le2Mz64T"},
+  {username:"ranger", password:"Ra8Kd95W"},
+  {username:"knight", password:"Kn3Xp57Q"},
+  {username:"turbo", password:"Tu6Lv21N"},
+  {username:"alpha", password:"Ap9Rm83K"},
+  {username:"bravo", password:"Br5Yt42M"},
+  {username:"charlie", password:"Ch7Wq16P"},
+  {username:"delta", password:"De4Nk78X"},
+  {username:"echo", password:"Ec8Jp35V"},
+  {username:"foxtrot", password:"Fx2Lm94Q"},
+  {username:"gamma", password:"Ga6Xs27T"},
+  {username:"helix", password:"He1Vp85N"},
+  {username:"inferno", password:"In9Qk43L"},
+  {username:"jaguar", password:"Ja5Mz72W"},
+  {username:"karma", password:"Ka8Rp14X"},
+  {username:"laser", password:"La3Tn67Q"},
+  {username:"meteor", password:"Me7Wx29P"},
+  {username:"nova", password:"No4Kz86M"},
+  {username:"omega", password:"Om2Lp53V"},
+  {username:"pegasus", password:"Pe9Xq71N"},
+  {username:"quantum", password:"Qu5Vr38K"},
+  {username:"rebel", password:"Re8Mz24T"},
+  {username:"storm", password:"St1Kp97W"},
+  {username:"tornado", password:"To6Nx45Q"},
+  {username:"ultra", password:"Ul3Wp82M"},
+  {username:"vector", password:"Ve7Lq19X"},
+  {username:"wolf", password:"Wo4Rm63P"},
+  {username:"xenon", password:"Xe9Tk25N"},
+  {username:"yodha", password:"Yo2Vz78K"},
+  {username:"zeus", password:"Ze8Mp41Q"},
+  {username:"atlas", password:"At5Lx93W"},
+  {username:"blaze", password:"Bl1Qn67M"},
+  {username:"cyclone", password:"Cy7Rp34T"},
+  {username:"dynamo", password:"Dy4Wk82X"},
+  {username:"apollo", password:"Ap7Kx94Lm"},
+  {username:"archer", password:"Ar3Vp62Qn"},
+  {username:"asteroid", password:"As8Tm15Rw"},
+  {username:"bandit", password:"Ba5Qz71Kp"},
+  {username:"bison", password:"Bi9Ln34Xt"},
+  {username:"bullet", password:"Bu2Wr86Mv"},
+  {username:"canyon", password:"Ca6Xp29Qk"},
+  {username:"captain", password:"Cp1Mz75Ln"},
+  {username:"comet", password:"Co8Tk43Wp"},
+  {username:"cyclonex", password:"Cy4Vr92Km"},
+  {username:"diesel", password:"Di7Lp18Qx"},
+  {username:"domino", password:"Do3Wn67Rt"},
+  {username:"duke", password:"Du9Kx25Mv"},
+  {username:"empire", password:"Em5Qp84Ln"},
+  {username:"explorer", password:"Ex2Vz39Kt"},
+  {username:"fighter", password:"Fi8Lm71Qw"},
+  {username:"galaxy", password:"Ga4Tk26Xp"},
+  {username:"gladiator", password:"Gl7Wp95Mn"},
+  {username:"gravity", password:"Gr1Nx53Lq"},
+  {username:"hawk", password:"Ha9Kz42Rt"},
+  {username:"horizon", password:"Ho5Vm87Xp"},
+  {username:"icefire", password:"Ic3Lp16Qn"},
+  {username:"impact", password:"Im8Wr74Kt"},
+  {username:"ironman", password:"Ir2Xq95Mv"},
+  {username:"jetstar", password:"Je6Nk38Lp"},
+  {username:"kingston", password:"Ki1Vp72Qw"},
+  {username:"lightning", password:"Li9Tm45Rx"},
+  {username:"majestic", password:"Ma4Kp83Ln"},
+  {username:"monster", password:"Mo7Wz21Qt"},
+  {username:"neptune", password:"Ne3Lx96Mv"},
+  {username:"ninja", password:"Ni8Qr54Kp"},
+  {username:"orbit", password:"Or2Vp73Ln"},
+  {username:"patriot", password:"Pa6Tk18Qw"},
+  {username:"pioneer", password:"Pi1Xm85Rt"},
+  {username:"predator", password:"Pr9Lq47Kv"},
+  {username:"proton", password:"Pt4Wn62Mx"},
+  {username:"rapid", password:"Ra7Kx93Lp"},
+  {username:"samurai", password:"Sa3Vp25Qn"},
+  {username:"sniper", password:"Sn8Tm71Rw"},
+  {username:"solaris", password:"So2Qk84Mv"},
+  {username:"spartan", password:"Sp6Ln39Xt"},
+  {username:"striker", password:"St1Wr57Kp"},
+  {username:"summit", password:"Su9Xp26Lm"},
+  {username:"taurus", password:"Ta5Vz91Qw"},
+  {username:"tempest", password:"Te3Kp48Rt"},
+  {username:"trident", password:"Tr8Wm72Ln"},
+  {username:"valiant", password:"Va2Nx35Qk"},
+  {username:"voyager", password:"Vo6Lp97Mx"},
+  {username:"wildfire", password:"Wi1Tk64Rv"},
+  {username:"zenith", password:"Ze9Qx28Lp"}
+];
+
+// ============================================================
+//  localStorage-এ attempts সংরক্ষণ
+// ============================================================
+function getAttempts() {
+  try {
+    const data = localStorage.getItem('testBazarAttempts');
+    return data ? JSON.parse(data) : {};
+  } catch { return {}; }
+}
+
+function saveAttempts(attempts) {
+  localStorage.setItem('testBazarAttempts', JSON.stringify(attempts));
+}
+
+function getAttemptCount(username, setId) {
+  const attempts = getAttempts();
+  const key = username + '|' + setId;
+  return attempts[key] || 0;
+}
+
+function incrementAttempt(username, setId) {
+  const attempts = getAttempts();
+  const key = username + '|' + setId;
+  attempts[key] = (attempts[key] || 0) + 1;
+  saveAttempts(attempts);
+  return attempts[key];
+}
+
+// ============================================================
+//  সব সেটের ডেটা (Set 1-7 for Human Geography Unit 1: জনসংখ্যা)
+// ============================================================
+const allSets = {
+  1: {
+    name: 'Set 1',
+    icon: '👥',
+    topic: 'জনসংখ্যার প্রাথমিক ধারণা ও ঘনত্ব',
+    questions: [
+      {q: 'মানব জনসংখ্যাকে নির্দেশ করতে মানুষের বৈজ্ঞানিক নাম কী ব্যবহার করা হয়?', opts: ['হোমো ইরেক্টাস', 'হোমোসেপিয়েন্স (Homo Sapiens)', 'হোমো হ্যাবিলিস', 'হোমো নিয়ানডার্থালেন্সিস'], ans: 1, exp: 'ভূগোলে জনসংখ্যা বলতে মূলত মানব জনসংখ্যাকে বোঝায়। মানুষ হলো একটি প্রজাতি, যার বৈজ্ঞানিক নাম হোমোসেপিয়েন্স (Homo Sapiens)।'},
+      {q: '\'ডেমোগ্রাফি\' (Demography) শব্দটি কোন ভাষার শব্দ থেকে এসেছে?', opts: ['গ্রিক শব্দ', 'লাতিন শব্দ', 'জার্মান শব্দ', 'ফরাসি শব্দ'], ans: 0, exp: '\'ডেমোগ্রাফি\' শব্দটি দুটি গ্রিক শব্দ \'demos\' (জনগণ) এবং \'graphy\' (অনুশীলন) থেকে এসেছে।'},
+      {q: '\'ডেমোগ্রাফি\' শব্দটি ১৮৫৫ সালে সর্বপ্রথম কে ব্যবহার করেন?', opts: ['ট্রেওয়ার্থা', 'জিমারম্যান', 'গিলার্ড (Guillard)', 'র‍্যাভেনস্টাইন'], ans: 2, exp: '১৮৫৫ সালে ফরাসি পণ্ডিত গিলার্ড (Guillard) সর্বপ্রথম জনসংখ্যার বিজ্ঞান বোঝাতে \'ডেমোগ্রাফি\' শব্দটি ব্যবহার করেন।'},
+      {q: '"জনসংখ্যা হলো ভূগোলের সবকিছুর নির্দেশক"—এই উক্তিটি কার?', opts: ['থমসন', 'ট্রেওয়ার্থা (Trewartha)', 'ফিলিপ এম. হাউজার', 'জিমারম্যান'], ans: 1, exp: 'ভূগোলবিদ ট্রেওয়ার্থার মতে, মানুষের সংখ্যা, ঘনত্ব ও গুণাবলি ভূগোলের সমস্ত কিছুর অত্যাবশ্যকীয় পটভূমি প্রদান করে।'},
+      {q: 'মানুষ-জমি অনুপাত (Man-Land Ratio) বলতে কী বোঝায়?', opts: ['মোট জনসংখ্যা ও মোট ভূমির অনুপাত', 'মোট জনসংখ্যা ও মোট কার্যকরী জমির অনুপাত', 'মোট কৃষিজীবী ও মোট কৃষিজমির অনুপাত', 'মোট জনসংখ্যা ও বনভূমির অনুপাত'], ans: 1, exp: 'কোনো দেশ বা অঞ্চলের মোট জনসংখ্যার সঙ্গে কার্যকরী জমির অনুপাতকে মানুষ-জমি অনুপাত বলে।'},
+      {q: 'মানুষ-জমি অনুপাত কী ধরনের পরিমাপ?', opts: ['পরিমাণগত পরিমাপ', 'গুণগত পরিমাপ', 'আপেক্ষিক পরিমাপ', 'কোনটিই নয়'], ans: 1, exp: 'মানুষ-জমি অনুপাত একটি গুণগত পরিমাপ। কারণ, জনসংখ্যা ও জমির কার্যকরী ক্ষমতার সম্পর্ক এই অনুপাত দ্বারা বিচার করা হয়।'},
+      {q: 'কোনো দেশের মোট জনসংখ্যা এবং ওই দেশের মোট ক্ষেত্রফলের অনুপাতকে কী বলে?', opts: ['মানুষ-জমি অনুপাত', 'কাম্য জনসংখ্যা', 'জনঘনত্ব (Population Density)', 'জনাকীর্ণতা'], ans: 2, exp: 'কোনো দেশ বা অঞ্চলের মোট জনসংখ্যা ও মোট জমির পরিমাণ বা ক্ষেত্রফলের অনুপাতকে জনঘনত্ব বলে।'},
+      {q: 'জনঘনত্ব কী ধরনের সম্পর্ক নির্দেশ করে?', opts: ['পরিমাণগত সম্পর্ক', 'গুণগত সম্পর্ক', 'অর্থনৈতিক সম্পর্ক', 'সামাজিক সম্পর্ক'], ans: 0, exp: 'জনঘনত্ব হলো মানুষ ও জমির একটি পরিমাণগত সম্পর্ক, যা থেকে কেবল জনসংখ্যা বণ্টনের প্রকৃতি সম্পর্কে ধারণা পাওয়া যায়।'},
+      {q: 'শারীরবৃত্তীয় বা পুষ্টিগত ঘনত্ব (Physiological density) কীভাবে নির্ণয় করা হয়?', opts: ['মোট জনসংখ্যা / মোট ক্ষেত্রফল', 'মোট জনসংখ্যা / মোট কৃষিজমি', 'মোট কৃষি জনসংখ্যা / মোট কৃষিজমি', 'গ্রামীণ জনসংখ্যা / মোট কৃষিজমি'], ans: 1, exp: 'কোনো অঞ্চলের মোট জনসংখ্যাকে ওই অঞ্চলের মোট কৃষিজমি দিয়ে ভাগ করলে শারীরবৃত্তীয় বা পুষ্টিগত ঘনত্ব পাওয়া যায়।'},
+      {q: 'কৃষিভিত্তিক ঘনত্ব (Agricultural density) নির্ণয়ের সূত্রটি কী?', opts: ['মোট জনসংখ্যা / মোট কৃষিজমি', 'মোট কৃষি জনসংখ্যা / মোট কৃষিজমি', 'গ্রামীণ জনসংখ্যা / মোট ক্ষেত্রফল', 'মোট কৃষি জনসংখ্যা / মোট কার্যকরী জমি'], ans: 1, exp: 'একটি অঞ্চলে কৃষিকাজের সাথে যুক্ত মোট কৃষি জনসংখ্যাকে ওই অঞ্চলের মোট কৃষিজমি দ্বারা ভাগ করলে কৃষিভিত্তিক ঘনত্ব নির্ণয় করা হয়।'},
+      {q: 'মানুষ-জমি অনুপাত কম হলে কোন কৃষি পদ্ধতি দেখা যায়?', opts: ['প্রগাঢ় কৃষি', 'ব্যাপক কৃষি (Extensive Agriculture)', 'বাগিচা কৃষি', 'মিশ্র কৃষি'], ans: 1, exp: 'কোনো দেশের মানুষ-জমি অনুপাত কম হলে সেই দেশের মানুষ ব্যাপক কৃষিপদ্ধতিতে চাষ-আবাদ করে। আমেরিকা, কানাডা, অস্ট্রেলিয়া প্রভৃতি দেশে এই পদ্ধতি দেখা যায়।'},
+      {q: 'প্রগাঢ় কৃষি পদ্ধতিতে চাষাবাদ কোন অঞ্চলে দেখা যায়?', opts: ['যেখানে মানুষ-জমি অনুপাত কম', 'যেখানে মানুষ-জমি অনুপাত বেশি', 'যেখানে জনবিরলতা থাকে', 'উন্নত দেশগুলিতে'], ans: 1, exp: 'যেসব অঞ্চলে মানুষ-জমি অনুপাত বেশি, সেখানে অল্প পরিমাণ জমিতে প্রচুর অর্থ ও শ্রম বিনিয়োগ করে প্রগাঢ় পদ্ধতিতে ফসল উৎপাদন করা হয়।'},
+      {q: 'পৃথিবীর কোন গোলার্ধে জনসংখ্যার আধিক্য লক্ষ করা যায়?', opts: ['উত্তর গোলার্ধে', 'দক্ষিণ গোলার্ধে', 'পূর্ব গোলার্ধে', 'পশ্চিম গোলার্ধে'], ans: 0, exp: 'গোলার্ধের বিচারে দক্ষিণ গোলার্ধ অপেক্ষা উত্তর গোলার্ধে জনসংখ্যার আধিক্য লক্ষ করা যায়। পৃথিবীর মোট জনসংখ্যার প্রায় ৯০ শতাংশ মানুষ উত্তর গোলার্ধেই বাস করে।'},
+      {q: 'জনঘনত্ব থেকে কোন বিষয়টির ধারণা পাওয়া যায় না?', opts: ['জনসংখ্যা বণ্টনের প্রকৃতি', 'মোট জমির পরিমাণ', 'দেশের অর্থনৈতিক অবস্থা বা কাম্য জনসংখ্যা', 'প্রতি বর্গকিমিতে লোকসংখ্যা'], ans: 2, exp: 'জনঘনত্ব থেকে কোনো দেশের কাম্য জনসংখ্যা (Optimum Population) অথবা অর্থনৈতিক অবস্থা সম্পর্কে কোনো স্পষ্ট ধারণা পাওয়া যায় না।'},
+      {q: 'মানুষ-জমি অনুপাত কেন একটি গতিশীল (Dynamic) ধারণা?', opts: ['কারণ জমির পরিমাণ প্রতিনিয়ত বাড়ে', 'কারণ জনসংখ্যা সবসময় স্থির থাকে', 'কারণ জ্ঞান ও প্রযুক্তির উন্নতিতে জমির কার্যকারিতা বহুগুণ বৃদ্ধি পায়', 'কারণ মানুষ সবসময় পরিব্রাজন করে'], ans: 2, exp: 'সময়ের সাথে সাথে জ্ঞান, বিজ্ঞান ও প্রযুক্তির উন্নতির ফলে জমির কার্যকারিতা বহুগুণ বাড়ে। তাই মানুষ-জমি অনুপাত একটি গতিশীল ধারণা।'}
+    ]
+  },
+  2: {
+    name: 'Set 2',
+    icon: '🗺️',
+    topic: 'পৃথিবীর জনসংখ্যার বণ্টন ও ঘনত্ব অঞ্চল',
+    questions: [
+      {q: 'পৃথিবীর মোট জনসংখ্যার প্রায় ৯০ শতাংশ মানুষ স্থলভাগের মাত্র কত শতাংশ অঞ্চলে বাস করে?', opts: ['২ শতাংশ', '৪ শতাংশ', '১০ শতাংশ', '২০ শতাংশ'], ans: 2, exp: 'পৃথিবীর মোট জনসংখ্যার প্রায় ৯০ শতাংশ জনগণ বাস করে স্থলভাগের মাত্র ১০ শতাংশ অঞ্চলে।'},
+      {q: 'সবচেয়ে বেশি জনঘনত্বপূর্ণ মহাদেশ কোনটি?', opts: ['ইউরোপ', 'উত্তর আমেরিকা', 'এশিয়া', 'আফ্রিকা'], ans: 2, exp: 'পৃথিবীর সবচেয়ে বেশি জনঘনত্বপূর্ণ মহাদেশ হলো এশিয়া, যেখানে ঘনত্ব প্রতি বর্গকিমিতে প্রায় ৯৬.৪ জন।'},
+      {q: 'পৃথিবীর অর্ধেকের বেশি মানুষ কোথায় বাস করে?', opts: ['উত্তর আমেরিকার শিল্পাঞ্চলে', 'পূর্ব ও দক্ষিণ-পূর্ব এশিয়ার নদীগঠিত সমভূমি অঞ্চলে', 'ইউরোপের ভূমধ্যসাগরীয় উপকূলে', 'আফ্রিকার নীলনদ অববাহিকায়'], ans: 1, exp: 'পৃথিবীর অর্ধেকের বেশি মানুষ বাস করে পূর্ব ও দক্ষিণ-পূর্ব এশিয়ার নদীগঠিত সমভূমি অঞ্চলে।'},
+      {q: 'অতি-নিবিড় জনঘনত্ব অঞ্চলে প্রতি বর্গকিমিতে কতজন বাস করে?', opts: ['১-১০ জন', '১১-৫০ জন', '৫১-১০০ জন', '১০০ জনের বেশি'], ans: 3, exp: 'পৃথিবীর যেসব অঞ্চলের জনঘনত্ব প্রতি বর্গকিমিতে ১০০ জনের বেশি, সেগুলি অতি-নিবিড় জনঘনত্বযুক্ত অঞ্চলের অন্তর্গত।'},
+      {q: 'নিবিড় জনঘনত্ব অঞ্চলে প্রতি বর্গকিমিতে কতজন বাস করে?', opts: ['১-১০ জন', '৫১-১০০ জন', '১১-৫০ জন', '১০০ জনের বেশি'], ans: 1, exp: 'পৃথিবীর যেসব অঞ্চলে জনসংখ্যার ঘনত্ব প্রতি বর্গকিমিতে ৫১ থেকে ১০০ জন, সেগুলি নিবিড় জনঘনত্ব অঞ্চলের অন্তর্গত।'},
+      {q: 'মধ্যম বা নাতি-নিবিড় জনঘনত্ব অঞ্চলে প্রতি বর্গকিমিতে কতজন বাস করে?', opts: ['১১-৫০ জন', '১-১০ জন', '৫১-১০০ জন', '১০০ জনের বেশি'], ans: 0, exp: 'পৃথিবীর যেসব অঞ্চলে জনঘনত্ব প্রতি বর্গকিমিতে ১১ থেকে ৫০ জন, সেগুলি মধ্যম বা নাতি-নিবিড় জনঘনত্ব অঞ্চলের অন্তর্গত।'},
+      {q: 'বিরল জনঘনত্ব অঞ্চলে প্রতি বর্গকিমিতে কতজন বাস করে?', opts: ['১ জনের কম', '১-১০ জন', '১১-৫০ জন', '৫১-১০০ জন'], ans: 1, exp: 'পৃথিবীর যেসব অঞ্চলের জনঘনত্ব প্রতি বর্গকিমিতে ১ থেকে ১০ জন, সেগুলি বিরল জনঘনত্ব অঞ্চলের অন্তর্গত।'},
+      {q: 'আমেরিকা যুক্তরাষ্ট্রের শিল্পপ্রধান উত্তর-পূর্ব অঞ্চল কোন জনঘনত্ব অঞ্চলের অন্তর্গত?', opts: ['বিরল জনঘনত্ব অঞ্চল', 'মধ্যম জনঘনত্ব অঞ্চল', 'নিবিড় জনঘনত্ব অঞ্চল', 'অতি-নিবিড় জনঘনত্ব অঞ্চল'], ans: 3, exp: 'আমেরিকা যুক্তরাষ্ট্রের শিল্পপ্রধান উত্তর-পূর্ব অংশ এবং কানাডার দক্ষিণ-পূর্বের উপকূলীয় অংশ অতি-নিবিড় জনঘনত্বযুক্ত অঞ্চলের অন্তর্গত।'},
+      {q: 'দক্ষিণ আমেরিকার আর্জেন্টিনার পম্পাস অঞ্চল কোন জনঘনত্ব অঞ্চলের অন্তর্গত?', opts: ['অতি-নিবিড় জনঘনত্ব অঞ্চল', 'নিবিড় জনঘনত্ব অঞ্চল', 'বিরল জনঘনত্ব অঞ্চল', 'অতি-বিরল জনঘনত্ব অঞ্চল'], ans: 1, exp: 'আর্জেন্টিনার পম্পাস অঞ্চলের মধ্য অংশ নিবিড় জনঘনত্ব অঞ্চলের অন্তর্গত (প্রতি বর্গকিমিতে ৫১-১০০ জন)।'},
+      {q: 'নীল নদ অববাহিকা ও সাহারা মরুভূমি বাদে আফ্রিকার প্রায় সমগ্র অংশ কোন জনঘনত্ব অঞ্চলের অন্তর্গত?', opts: ['অতি-নিবিড় জনঘনত্ব অঞ্চল', 'নিবিড় জনঘনত্ব অঞ্চল', 'বিরল জনঘনত্ব অঞ্চল', 'মধ্যম জনঘনত্ব অঞ্চল'], ans: 2, exp: 'নীলনদ-অববাহিকা ও সাহারা মরুভূমি বাদে আফ্রিকার প্রায় সমগ্র অংশ বিরল জনঘনত্ব অঞ্চলের অন্তর্গত।'},
+      {q: 'পলিমাটি সমৃদ্ধ সমভূমিতে ঘন বসতি গড়ে ওঠার প্রধান কারণ কী?', opts: ['পর্যাপ্ত খনিজ সম্পদের উপস্থিতি', 'মাটির উর্বরতা ও কৃষিকাজের সুবিধা', 'শিল্পের উন্নতি', 'পর্যটন কেন্দ্র'], ans: 1, exp: 'পলিসমৃদ্ধ উর্বর সমভূমিতে কৃষিকাজ ভালো হয়। এই কারণে, পলিসমৃদ্ধ গাঙ্গেয় সমভূমিতে ঘন জনবসতি গড়ে উঠেছে।'},
+      {q: 'খনিজ সম্পদের প্রাচুর্যের কারণে ভারতের কোন অঞ্চলে ঘন জনবসতি গড়ে উঠেছে?', opts: ['হিমালয় পার্বত্য অঞ্চলে', 'থর মরুভূমিতে', 'ঝাড়খণ্ডের লোহা খনি অঞ্চল (কিরিবুরু, মেঘাহাতুবুরু)', 'লাক্ষাদ্বীপে'], ans: 2, exp: 'খনিজ দ্রব্যের প্রাচুর্যের জন্য ভারতের ঝাড়খণ্ডের দক্ষিণ প্রান্তে লোহা খনিগুলিকে কেন্দ্র করে কিরিবুরু, মেঘাহাতুবুরু ও বোলানিতে ঘন জনবসতি গড়ে উঠেছে।'},
+      {q: 'কানাডা ও ইউরোপের সরলবর্গীয় বনভূমির প্রান্তভাগে জনবসতি গড়ে ওঠার কারণ কী?', opts: ['কৃষিকাজের সুবিধা', 'বনভূমি থেকে কাঠ সংগ্রহ ও সরবরাহ', 'খনিজ সম্পদের প্রাচুর্য', 'শিল্পের প্রসার'], ans: 1, exp: 'কানাডা ও ইউরোপের সরলবর্গীয় বনভূমি থেকে কাঠ সংগ্রহ ও সরবরাহ করার জন্য বনভূমির প্রান্তভাগে জনবসতি গড়ে উঠেছে।'},
+      {q: '১৯৪৭ সালে দেশভাগের পর ভারতে জনসংখ্যা বৃদ্ধির একটি অপ্রাকৃতিক কারণ কী?', opts: ['খনিজ সম্পদের আবিষ্কার', 'শিল্পের বিকাশ', 'তৎকালীন পূর্ব ও পশ্চিম পাকিস্তান থেকে দলে দলে শরণার্থীর আগমন', 'কৃষির উন্নতি'], ans: 2, exp: '১৯৪৭ সালে দেশভাগের পর তৎকালীন পূর্ব ও পশ্চিম পাকিস্তান থেকে দলে দলে শরণার্থী ভারতে আসায় ভারতের জনসংখ্যা বহুগুণ বেড়েছে।'},
+      {q: '২০৫০ সালে পৃথিবীর জনসংখ্যা বেড়ে কত হবে বলে রাষ্ট্রসংঘ অনুমান করেছে?', opts: ['প্রায় ৭০০ কোটি', 'প্রায় ৮৯০ কোটি', 'প্রায় ১০০০ কোটি', 'প্রায় ১২০০ কোটি'], ans: 1, exp: 'রাষ্ট্রসংঘের হিসাব অনুযায়ী, ২০৫০ সালে পৃথিবীর মোট জনসংখ্যা বেড়ে দাঁড়াবে প্রায় ৮৯০ কোটি।'}
+    ]
+  },
+  3: {
+    name: 'Set 3',
+    icon: '📊',
+    topic: 'প্রজনন বা ফার্টিলিটি (Fertility)',
+    questions: [
+      {q: 'জনসংখ্যা পরিবর্তনের মূল নির্ণায়ক কয়টি ও কী কী?', opts: ['২টি (জন্মহার ও মৃত্যুহার)', '৩টি (প্রজনন হার, মরণশীলতার মাত্রা এবং পরিব্রাজন)', '৪টি (জন্মহার, মৃত্যুহার, পরিব্রাজন ও পেশা)', '৫টি'], ans: 1, exp: 'পৃথিবীর কোনো দেশ বা মহাদেশের জনসংখ্যার হ্রাসবৃদ্ধির মূল উপাদান হলো তিনটি: প্রজনন হার, মরণশীলতার মাত্রা এবং পরিব্রাজন।'},
+      {q: 'সমাজবিজ্ঞানী থমসন ও লুইসের মতে \'প্রজনন\' বা ফার্টিলিটি কাকে বলে?', opts: ['পুরুষের কাজের ক্ষমতাকে', 'কোনো নারী বা নারীজাতির সন্তান উৎপাদনের কাজকে', 'জনসংখ্যার বৃদ্ধিকে', 'শিশু মৃত্যুহারকে'], ans: 1, exp: 'থমসন ও লুইসের মতে, কোনো নারী বা নারীজাতির সন্তান উৎপাদনের কাজকে বা জৈবিক ঘটনাকে প্রজনন বা ফার্টিলিটি বলা হয়।'},
+      {q: 'অপরিশোধিত জন্মহার (CBR) নির্ণয়ের সূত্রটি কী?', opts: ['(নির্দিষ্ট বছরে মোট জীবিত জন্ম / ওই বছরের মধ্যবর্তী সময়ের মোট জনসংখ্যা) × 1000', '(মোট জীবিত জন্ম / মোট নারী জনসংখ্যা) × 1000', '(মোট জীবিত জন্ম / মোট শিশু সংখ্যা) × 100', '(মোট মৃত্যু / মোট জনসংখ্যা) × 1000'], ans: 0, exp: 'কোনো দেশ বা অঞ্চলে একটি নির্দিষ্ট বছরের মধ্যবর্তী সময়ের জনসংখ্যার সাপেক্ষে প্রতি হাজার জনে জন্ম লাভ করা মোট জীবিত শিশুর অনুপাতকে অপরিশোধিত জন্মহার বলে।'},
+      {q: 'অপরিশোধিত জন্মহারের (CBR) একটি বড়ো ত্রুটি কী?', opts: ['এটি গণনা করা খুব কঠিন', 'এটি কেবল বিবাহিত নারীদের হিসাব রাখে', 'এটি বয়স-লিঙ্গ গঠন এবং অবৈবাহিক মর্যাদাকে বিবেচনা করে না', 'এটি কেবল মৃত্যুহার দেখায়'], ans: 2, exp: 'অপরিশোধিত জন্মহার নির্ণয়ে বয়স-লিঙ্গ গঠন বা বৈবাহিক মর্যাদাকে বিবেচনা করা হয় না।'},
+      {q: 'নারী-শিশু অনুপাত (Fertility Ratio) নির্ণয়ে কোন বয়সি নারীদের বিবেচনা করা হয়?', opts: ['১০-২০ বছর', '১৫-৪৯ বছর', '২০-৩৫ বছর', '২৫-৬০ বছর'], ans: 1, exp: 'নারী-শিশু অনুপাত হলো প্রজনন ক্ষমতার একটি সূচক, যেখানে কেবল পুনরুৎপাদক বয়স শ্রেণির (১৫-৪৯ বছর) নারীদের বিবেচনা করা হয়।'},
+      {q: 'ফার্টিলিটি অনুপাত নির্ণয়ে শিশুদের বয়স কত ধরা হয়?', opts: ['১ বছরের কম', '৫ বছরের কম (০-৪ বছর)', '১০ বছরের কম', '১৫ বছরের কম'], ans: 1, exp: 'সন্তান ধারণ বয়সি শ্রেণির মহিলাদের সাপেক্ষে প্রতি হাজার জনে ৫ বছরের কম বয়সি শিশুর অনুপাতকে নারী-শিশু অনুপাত বলে।'},
+      {q: 'স্বাভাবিক প্রজনন হার (GFR) নির্ণয়ে মহিলাদের কোন বয়সসীমা ধরা হয়?', opts: ['১৫-৪৪ বছর', '২০-৪০ বছর', '২৫-৪৫ বছর', '১৫-৬০ বছর'], ans: 0, exp: 'স্বাভাবিক প্রজনন হার হলো স্বাভাবিক পুনরুৎপাদক বয়সের (১৫-৪৪ বছর) মহিলাদের সাপেক্ষে প্রতি ১০০০ জনে জীবিত জন্মের অনুপাত।'},
+      {q: 'বয়স-নির্দিষ্ট জন্মহার (ABR)-এর প্রধান সুবিধা কী?', opts: ['এর মাধ্যমে মোট জনসংখ্যা জানা যায়', 'এর পরিমাপে বয়সভিত্তিক বিশদ তুলনা করা যায় এবং প্রজনন আচরণের পার্থক্য বোঝা যায়', 'এটি শিশু মৃত্যুহার নির্দেশ করে', 'এটি পরিব্রাজন পরিমাপ করে'], ans: 1, exp: 'বয়স-নির্দিষ্ট জন্মহার ব্যবহার করে বিভিন্ন বয়স-গোষ্ঠীর মহিলাদের প্রজনন আচরণের পার্থক্য খুব সহজেই তুলনা করা যায়।'},
+      {q: 'বয়স-লিঙ্গ সমন্বিত ফার্টিলিটির সবচেয়ে সংবেদনশীল পরিমাপ কোনটি?', opts: ['অপরিশোধিত জন্মহার (CBR)', 'স্বাভাবিক প্রজনন হার (GFR)', 'মোট প্রজনন হার (TFR)', 'শিশু মৃত্যুহার (IMR)'], ans: 2, exp: 'মোট প্রজনন হার (Total Fertility Rate) হলো বয়স-লিঙ্গ সমন্বিত ফার্টিলিটির পরিমাপ, যা অত্যন্ত সংবেদনশীল ও অর্থবহ।'},
+      {q: 'ফার্টিলিটি এবং ফেকান্ডিটি-এর মধ্যে মূল পার্থক্য কী?', opts: ['ফার্টিলিটি হলো মৃত্যুহার, ফেকান্ডিটি হলো জন্মহার', 'ফার্টিলিটি হলো জন্মদানের ঘটনা, আর ফেকান্ডিটি হলো সন্তান উৎপাদনের ক্ষমতা বা সম্ভাবনা', 'ফার্টিলিটি কেবল পুরুষদের জন্য, ফেকান্ডিটি নারীদের জন্য', 'দুটি একই বিষয়'], ans: 1, exp: 'ফার্টিলিটি বলতে জন্মদানের বাস্তব ঘটনাকে বোঝায়। অন্যদিকে, সমগ্র পুনরুৎপাদন কালে কোনো মহিলার পুনরুৎপাদন ক্ষমতাকে ফেকান্ডিটি নির্দেশ করে।'},
+      {q: 'সমাজবিজ্ঞানী কাস্ত্রোর মতে, উচ্চ প্রজননের অনুঘটক কোনটি?', opts: ['শিক্ষা', 'শিল্পায়ন', 'দারিদ্র্য', 'নগরায়ণ'], ans: 2, exp: 'সমাজবিজ্ঞানী কাস্ত্রোর মতে, দারিদ্র্য উচ্চ প্রজননের অনুঘটক।'},
+      {q: 'উন্নত দেশগুলিতে নিম্ন প্রজনন হারের অন্যতম প্রধান কারণ কী?', opts: ['বাল্যবিবাহ', 'উচ্চ জীবনযাত্রার মান ও ছোটো পরিবারের প্রতি আসক্তি', 'কৃষিভিত্তিক সমাজব্যবস্থা', 'পুত্র সন্তানের আকাঙ্ক্ষা'], ans: 1, exp: 'উন্নত দেশসমূহের নারী ও পুরুষ অধিক সন্তানের জন্ম দিয়ে নিজেদের জীবনযাত্রার মানের অবনমনের জন্য প্রস্তুত নয়।'},
+      {q: 'কোন ধরনের দেশে উচ্চ প্রজনন হার সর্বাধিক দেখা যায়?', opts: ['উন্নত দেশগুলিতে', 'অনুন্নত ও উন্নয়নশীল দেশগুলিতে', 'উত্তর আমেরিকায়', 'ওশিয়ানিয়ায়'], ans: 1, exp: 'অনুন্নত ও উন্নয়নশীল দেশগুলির উচ্চ প্রজননের হার সর্বাধিক। আফ্রিকা, দক্ষিণ ও দক্ষিণ-পূর্ব এশিয়া ও লাতিন আমেরিকার দেশগুলি এই শ্রেণির অন্তর্ভুক্ত।'},
+      {q: 'প্রজননের \'জনমিতি সংক্রান্ত নিয়ন্ত্রক\' কোনটি?', opts: ['জাতিগত বিন্যাস', 'ধর্মীয় পটভূমি', 'বয়স কাঠামো ও লিঙ্গ কাঠামো', 'নারী শিক্ষার অভাব'], ans: 2, exp: 'প্রজননের জনমিতি নিয়ন্ত্রকগুলির মধ্যে উল্লেখযোগ্য হলো বয়স কাঠামো, লিঙ্গ কাঠামো, নগরায়ণের মাত্রা ইত্যাদি।'},
+      {q: 'প্রজননের \'সামাজিক নিয়ন্ত্রক\' কোনটি?', opts: ['নারীর প্রজনন সক্ষমতা', 'ধর্মীয় পরিবেশ, জাতিগত বিন্যাস ও শিক্ষার মাত্রা', 'লিঙ্গ কাঠামো', 'নগরায়ণের মাত্রা'], ans: 1, exp: 'প্রজননের সামাজিক নিয়ন্ত্রকগুলি হলো—ধর্মীয় পরিবেশ, জাতিগত বিন্যাস, শিক্ষার মাত্রা, বিবাহকালীন বয়স ইত্যাদি।'}
+    ]
+  },
+  4: {
+    name: 'Set 4',
+    icon: '📉',
+    topic: 'মরণশীলতা ও পরিব্রাজন',
+    questions: [
+      {q: 'স্থূল মৃত্যুহার বা অপরিশোধিত মৃত্যুহার (CDR) কীভাবে নির্ণয় করা হয়?', opts: ['(বছরে মোট মৃত্যু / বছরের মধ্যবর্তী মোট জনসংখ্যা) × 1000', '(বছরে মোট শিশু মৃত্যু / মোট জনসংখ্যা) × 100', '(মোট জন্ম / মোট মৃত্যু) × 1000', '(মোট মৃত্যু / মোট নারী জনসংখ্যা) × 1000'], ans: 0, exp: 'স্থূল মৃত্যুহার নির্ণয়ের সহজ পরিমাপ হলো নির্দিষ্ট বছরে মোট মৃত্যুকে ওই বছরের মধ্যবর্তী মোট জনসংখ্যা দিয়ে ভাগ করে তাকে ১০০০ দিয়ে গুণ করা।'},
+      {q: 'শিশু মৃত্যুহার (IMR) নির্ণয়ে কোন বয়সের শিশুদের ধরা হয়?', opts: ['৫ বছরের কম বয়সি শিশু', '১ বছরের কম বয়সি শিশু', '৩ বছরের কম বয়সি শিশু', '১০ বছরের কম বয়সি শিশু'], ans: 1, exp: 'শিশু মৃত্যুহার বলতে সাধারণত এক বছরের কম বয়সি শিশুদের মৃত্যুকে বোঝায়।'},
+      {q: 'মাতৃত্বকালীন মৃত্যুহার (MMR) নির্ণয়ের ক্ষেত্রে সাধারণত গুণক হিসেবে কত ধরা হয়?', opts: ['১,০০০', '১০,০০০', '১০০', '১০'], ans: 1, exp: 'মাতৃত্বকালীন মৃত্যুহার হলো মাতৃত্বের কারণে মহিলার মৃত্যু সংখ্যাকে মোট জীবিত জন্ম সংখ্যা দিয়ে ভাগ করে তাকে ১০,০০০ দ্বারা গুণ করা।'},
+      {q: 'মানুষের বাসস্থানের স্থায়ী বা অস্থায়ী পরিবর্তনকে কী বলে?', opts: ['মরণশীলতা', 'প্রজনন', 'পরিব্রাজন বা প্রব্রজন (Migration)', 'জনাকীর্ণতা'], ans: 2, exp: 'কর্মসংস্থান, শিক্ষা, সামাজিক বা রাজনৈতিক কারণে মানুষের এক স্থান থেকে অন্য স্থানে গিয়ে বসবাস করাকে পরিব্রাজন বলে।'},
+      {q: 'জনসংখ্যার প্রকৃত বৃদ্ধি (Actual Growth) নির্ণয়ের সমীকরণ কী?', opts: ['জন্মহার - মৃত্যুহার', 'জনসংখ্যার স্বাভাবিক বৃদ্ধি + নিট প্রব্রজন', 'জন্মহার + প্রব্রজন', 'মৃত্যুহার + প্রব্রজন'], ans: 1, exp: 'জনসংখ্যার স্বাভাবিক বৃদ্ধির সঙ্গে নিট প্রব্রজনকারীর সংখ্যা যোগ না হলে জনসংখ্যার প্রকৃত বৃদ্ধি পরিমাপ করা যায় না।'},
+      {q: 'অন্তর্মুখী প্রব্রজন এবং বহির্মুখী প্রব্রজনের বিয়োগফলকে কী বলে?', opts: ['স্থূল প্রব্রজন', 'নিট প্রব্রজন (Net Migration)', 'স্বাভাবিক প্রব্রজন', 'আন্তর্জাতিক প্রব্রজন'], ans: 1, exp: 'কোনো অঞ্চলে অন্তর্মুখী প্রব্রজন এবং বহির্মুখী প্রব্রজনের বিয়োগফলকে নিট প্রব্রজন বলে।'},
+      {q: 'পরিব্রাজনের ফলে গন্তব্য অঞ্চলে জনসংখ্যার কী পরিবর্তন হয়?', opts: ['জন্মহার কমে এবং মৃত্যুহার বাড়ে', 'জন্মহার বাড়ে, মৃত্যুহার কমে এবং মানুষের গড় বয়স হ্রাস পায়', 'শুধুমাত্র নারী জনসংখ্যা বাড়ে', 'কোনো পরিবর্তন হয় না'], ans: 1, exp: 'গন্তব্য অঞ্চলে তরুন ও কর্মক্ষম মানুষের অভিবাসনের ফলে হঠাৎ করে জন্মহার বেড়ে যায় ও মৃত্যুহার কমে যায়।'},
+      {q: 'পশুপালক উপজাতিদের ঋতুভিত্তিক পরিব্রাজনকে কী বলে?', opts: ['ব্রেন ড্রেন', 'ট্রান্সহিউম্যানস (Transhumance) বা ঋতুকালীন যাযাবর', 'দীর্ঘমেয়াদি পরিব্রাজন', 'আন্তর্জাতিক পরিব্রাজন'], ans: 1, exp: 'পশুপালক উপজাতিরা শীত ঋতুতে সমতলে নেমে আসে এবং গ্রীষ্মে পাহাড়ে যায়। এই ধরনের স্বল্পমেয়াদি যাযাবর বৃত্তিকেই ট্রান্সহিউম্যান বলে।'},
+      {q: '\'ব্রেন ড্রেন\' (Brain Drain) বলতে কী বোঝায়?', opts: ['গ্রাম থেকে শহরে অশিক্ষিত মানুষের গমন', 'উন্নয়নশীল দেশ থেকে বুদ্ধিজীবী ও দক্ষ মানুষের উন্নত দেশে পরিব্রাজন', 'শহর থেকে গ্রামে মানুষের গমন', 'শুধু কৃষকদের পরিব্রাজন'], ans: 1, exp: 'যখন কোনো অনুন্নত বা উন্নয়নশীল দেশ থেকে চিকিৎসক, ইঞ্জিনিয়ার বা বুদ্ধিজীবী মানুষ উন্নত দেশে চলে যায়, তখন সেই মেধাপাচারকে ব্রেন ড্রেন বলে।'},
+      {q: 'পরিব্রাজনের \'আকর্ষণমূলক\' কারণের একটি উদাহরণ দাও।', opts: ['দারিদ্র্য ও বেকারত্ব', 'রাজনৈতিক অস্থিরতা', 'উন্নততর চিকিৎসা পরিসেবা ও উন্নত শিক্ষাব্যবস্থা', 'প্রাকৃতিক দুর্যোগ'], ans: 2, exp: 'যে কারণগুলি মানুষকে কোনো নতুন গন্তব্যে টেনে নিয়ে যায় তাকে আকর্ষণমূলক কারণ বলে। যেমন- উন্নত শিক্ষাব্যবস্থা, উন্নততর চিকিৎসা পরিসেবা।'},
+      {q: 'পরিব্রাজনের \'বিকর্ষণমূলক\' কারণের একটি উদাহরণ দাও।', opts: ['উন্নত জীবনযাত্রা', 'দারিদ্র্য, বেকারত্ব বা ধর্মীয় নিপীড়ন', 'আকর্ষণীয় জলবায়ু', 'অধিক কর্মসংস্থান'], ans: 1, exp: 'বিকর্ষণমূলক কারণগুলি প্রব্রজনের উৎস এলাকায় কাজ করে এবং মানুষদের বাধ্য করে অন্য এলাকায় চলে যেতে।'},
+      {q: 'পরিব্রাজন ও দূরত্বের সম্পর্ক নিয়ে \'Distance Decay Function\'-এর কথা কে বলেছেন?', opts: ['র‍্যাভেনস্টাইন (E. G. Ravenstein)', 'থম্পসন', 'জিমারম্যান', 'ট্রেওয়ার্থা'], ans: 0, exp: 'ই. জি. র‍্যাভেনস্টাইন তাঁর \'Laws of Migration\'-এ উল্লেখ করেছেন যে, দূরত্ব বাড়ার সাথে সাথে অভিবাসীর সংখ্যা হ্রাস পেতে থাকে।'},
+      {q: 'পরিব্রাজনের \'স্রোত ও বিপরীত স্রোত\' বলতে কী বোঝায়?', opts: ['মানুষ কেবল একমুখী পরিব্রাজন করে', 'যেদিকে মূল পরিব্রাজন ঘটে তার ঠিক বিপরীত দিকেও কিছু মানুষের পরিব্রাজন ঘটে', 'নদীর স্রোতের দিকে পরিব্রাজন', 'সমুদ্র পথে পরিব্রাজন'], ans: 1, exp: 'পরিব্রাজনের নিয়ম অনুযায়ী, প্রতিটি পরিযানের একটি মূল স্রোত ও তার বিপরীত স্রোত থাকে।'},
+      {q: 'গ্রাম-শহরের পার্থক্য অনুযায়ী, কারা বেশি সংখ্যায় পরিযান করে?', opts: ['শহরের মূল অধিবাসীরা', 'গ্রামের মূল অধিবাসীরা', 'উভয়ই সমান', 'কেউ পরিযান করে না'], ans: 1, exp: 'প্রব্রজন নীতি অনুযায়ী, শহরের মূল অধিবাসীদের তুলনায় গ্রামের মূল অধিবাসীরা বেশি সংখ্যায় পরিযান করে।'},
+      {q: '\'দীর্ঘমেয়াদি পরিব্রাজন\' বলতে গন্তব্য স্থানে কমপক্ষে কতদিন বসবাস করাকে বোঝায়?', opts: ['১ মাস', '৬ মাস', '১২ মাস বা ১ বছর', '৫ বছর'], ans: 2, exp: 'মানুষ উৎস অঞ্চল থেকে গমন করে গন্তব্য স্থানে কমপক্ষে ১২ মাস বা ১ বছরের জন্য বসবাস করলে, তাকে দীর্ঘমেয়াদি পরিব্রাজন বলে।'}
+    ]
+  },
+  5: {
+    name: 'Set 5',
+    icon: '📈',
+    topic: 'বয়স-লিঙ্গ পিরামিড ও নির্ভরতা অনুপাত',
+    questions: [
+      {q: 'বয়স-লিঙ্গ পিরামিডের অপর নাম কী?', opts: ['খাদ্য পিরামিড', 'জনসংখ্যা পিরামিড (Population Pyramid)', 'শক্তি পিরামিড', 'ইকো-পিরামিড'], ans: 1, exp: 'বিভিন্ন বয়সশ্রেণির ব্যবধানে নারী-পুরুষের সংখ্যা বা শতকরা অনুপাত যে অনুভূমিক স্তম্ভচিত্রের মাধ্যমে দেখানো হয়, তাকে বয়স-লিঙ্গ পিরামিড বা জনসংখ্যা পিরামিড বলে।'},
+      {q: 'বয়স-লিঙ্গ পিরামিডের X-অক্ষের বামদিকে এবং ডানদিকে কী দেখানো হয়?', opts: ['বামদিকে নারীর এবং ডানদিকে পুরুষের শতকরা মান', 'বামদিকে পুরুষের এবং ডানদিকে নারীর শতকরা মান', 'বামদিকে জন্মহার এবং ডানদিকে মৃত্যুহার', 'বামদিকে শিশু এবং ডানদিকে বৃদ্ধ'], ans: 1, exp: 'জনসংখ্যা পিরামিডের X-অক্ষের বামদিকে পুরুষের সংখ্যা এবং ডান দিকে নারীর সংখ্যা দেখানো হয়।'},
+      {q: 'ভারতে \'নির্ভরতা অনুপাত\' নির্ণয়ে পরিণত বা কর্মক্ষম জনসংখ্যার বয়সসীমা কত ধরা হয়?', opts: ['০-১৪ বছর', '১৫-৬৪ বছর', '১৫-৫৯ বছর', '৬০ বছরের বেশি'], ans: 2, exp: 'ভারতে ০-১৪ বছর এবং ৬০ বছর ও তার অধিক বয়সের জনসংখ্যাকে নির্ভরশীল ধরা হয় এবং ১৫-৫৯ বছরকে কর্মক্ষম জনসংখ্যা হিসেবে ধরা হয়।'},
+      {q: 'উন্নত দেশে নির্ভরতা অনুপাত নির্ণয়ে কর্মক্ষম জনসংখ্যার বয়সসীমা কত ধরা হয়?', opts: ['১৫-৫৯ বছর', '১৫-৬৪ বছর', '২০-৬০ বছর', '১০-৫০ বছর'], ans: 1, exp: 'উন্নত দেশগুলিতে রাষ্ট্রপুঞ্জের নির্দেশানুসারে ১৫-৬৪ বছর বয়সিদের কর্মক্ষম বা পরিণত জনসংখ্যা ধরা হয়।'},
+      {q: 'সম্প্রসারণকারী জনসংখ্যা পিরামিডের আকৃতি কেমন হয়?', opts: ['ভূমিভাগ সরু ও শীর্ষদেশ চওড়া', 'মধ্যভাগ স্ফীত', 'ভূমিভাগ অত্যন্ত প্রসারিত ও শীর্ষদেশ সংকীর্ণ বা তীক্ষ্ণ', 'নাসপাতি আকৃতির'], ans: 2, exp: 'যেসব দেশে জন্মহার ও মৃত্যুহার উভয়ই বেশি, সেইসব দেশের পিরামিডের ভূমিভাগ অত্যন্ত প্রসারিত ও শীর্ষদেশ সংকীর্ণ হয়।'},
+      {q: 'প্রথম শ্রেণির পিরামিড বা অবতল আকৃতির পিরামিড কোন ধরনের দেশে দেখা যায়?', opts: ['উন্নত দেশে', 'অনুন্নত দেশে', 'উন্নয়নশীল দেশে', 'কোনো দেশেই দেখা যায় না'], ans: 1, exp: 'অনুন্নত দেশে জন্মহার অধিক হওয়ায় পিরামিডের ভূমি প্রসারিত হয় এবং মৃত্যুহার অধিক হওয়ায় শীর্ষদেশ তীক্ষ্ণ হয়।'},
+      {q: 'স্থির বা নিশ্চল জনসংখ্যা পিরামিডের আকৃতি কেমন হয়?', opts: ['নাসপাতির মতো', 'ঘণ্টার মতো বা মৌচাকের মতো (মধ্যভাগ স্ফীত)', 'ত্রিভুজের মতো', 'উলটানো ত্রিভুজ'], ans: 1, exp: 'জন্ম ও মৃত্যুহার ধীরে ধীরে হ্রাস পাওয়ার পর জনসংখ্যা পিরামিড অনেকটা মৌচাকের বা ঘণ্টার আকৃতিবিশিষ্ট হয়।'},
+      {q: 'স্থির জনসংখ্যা পিরামিড কোন দেশ বা অঞ্চলে দেখা যায়?', opts: ['যেখানে জন্ম ও মৃত্যুহার অত্যন্ত বেশি', 'যেখানে জন্ম ও মৃত্যুহার ধীরে ধীরে হ্রাস পেয়ে সমান বা স্থিতিশীল হয়', 'যেখানে কেবল পুরুষদের সংখ্যা বেশি', 'যেখানে শুধু শিশুদের সংখ্যা বেশি'], ans: 1, exp: 'যেসব দেশে জন্ম ও মৃত্যুহার ধীরে ধীরে হ্রাস পেয়ে স্থিতিশীল হয়, সেখানে এই পিরামিড দেখা যায়।'},
+      {q: 'সংকোচনশীল জনসংখ্যা পিরামিডের আকৃতি কেমন হয়?', opts: ['ভূমিভাগ প্রসারিত', 'ভূমিভাগ সংকীর্ণ, মধ্যভাগ স্ফীত এবং শীর্ষভাগ চওড়া (নাসপাতি আকৃতি)', 'অবতল আকৃতি', 'সম্পূর্ণ সমান্তরাল'], ans: 1, exp: 'উন্নত দেশগুলোতে নিম্ন জন্মহারের কারণে পিরামিডের ভূমি সংকীর্ণ হয় এবং দীর্ঘ আয়ুষ্কালের কারণে মধ্য ও শীর্ষভাগ চওড়া হয়।'},
+      {q: 'নাসপাতি আকৃতির পিরামিড কোন দেশে দেখা যায়?', opts: ['জাপান, সুইডেন, জার্মানি', 'ভারত, বাংলাদেশ', 'রুয়ান্ডা, নাইজার', 'ইথিওপিয়া'], ans: 0, exp: 'উন্নত দেশগুলিতে এই সংকোচনশীল বা নাসপাতি আকৃতির পিরামিড দেখা যায়।'},
+      {q: '\'যুবক বা তরুণ নির্ভরতা অনুপাত\' কীভাবে নির্ণয় করা হয়?', opts: ['(০-১৪ বছর বয়সি জনসংখ্যা / ১৫-৬৪ বছর বয়সি জনসংখ্যা) × 100', '(৬৫+ বছর বয়সি জনসংখ্যা / ১৫-৬৪ বছর বয়সি জনসংখ্যা) × 100', '(মোট নারী / মোট পুরুষ) × 1000', '(জন্ম / মৃত্যু) × 100'], ans: 0, exp: 'তরুণ নির্ভরতা অনুপাত হলো ০-১৪ বছর বয়সি জনসংখ্যাকে কর্মক্ষম (১৫-৬৪) জনসংখ্যা দিয়ে ভাগ করে ১০০ দিয়ে গুণ করা।'},
+      {q: 'অগ্রগামী জনসংখ্যা বলতে কী বোঝায়?', opts: ['যে দেশের জন্মহার ও মৃত্যুহার উভয়ই খুব কম', 'যে দেশের জন্মহার ও মৃত্যুহার উভয়ই বেশি', 'যে দেশে শুধু বৃদ্ধদের সংখ্যা বেশি', 'যে দেশে জনসংখ্যা স্থির'], ans: 1, exp: 'যে দেশের জন্মহার ও মৃত্যুহার উভয়ই বেশি, সেই দেশের জনসংখ্যাকে অগ্রগামী জনসংখ্যা বলে।'},
+      {q: 'পশ্চাদগামী জনসংখ্যা কোন দেশে দেখা যায়?', opts: ['অনুন্নত দেশে', 'উন্নয়নশীল দেশে', 'উন্নত দেশে', 'মধ্যপ্রাচ্যের দেশে'], ans: 2, exp: 'উন্নত দেশসমূহে জন্মহার ভীষণভাবে কমে যাচ্ছে এবং মৃত্যুহারও কম। এরূপ জনসংখ্যাকে পশ্চাদগামী জনসংখ্যা বলে।'},
+      {q: 'জন্মহার অধিক হলেও শিশু মৃত্যুহার দ্রুত হ্রাস পেলে পিরামিডের ঢাল কেমন হয়?', opts: ['অবতল', 'উত্তল', 'খাড়া প্রকৃতির (Steep/Type-II)', 'সমান্তরাল'], ans: 2, exp: 'জন্মহার অধিক হলেও যদি মৃত্যুহার দ্রুত হ্রাস পায়, তাহলে পিরামিডের ঢাল খাড়া প্রকৃতির হয়।'},
+      {q: 'জনসংখ্যা পিরামিডের প্রধান তাৎপর্য কী?', opts: ['এটি কেবল মোট জমির পরিমাণ দেখায়', 'এর মাধ্যমে কোনো দেশের জন্মহার, মৃত্যুহার, নারী-পুরুষের গঠন ও আর্থসামাজিক অবস্থা প্রতিফলিত হয়', 'এটি শুধু পরিব্রাজন পরিমাপ করে', 'এটি দেশের খনিজ সম্পদ নির্দেশ করে'], ans: 1, exp: 'জনসংখ্যা পিরামিডের মাধ্যমে বয়সভিত্তিক নারী-পুরুষের গঠন, কর্মশীল জনসংখ্যা, নির্ভরশীলতা অনুপাত এবং দেশের আর্থসামাজিক অবস্থার প্রতিফলন দেখা যায়।'}
+    ]
+  },
+  6: {
+    name: 'Set 6',
+    icon: '🏙️',
+    topic: 'জনসংখ্যা বৃদ্ধি, বিবর্তন তত্ত্ব ও জনাকীর্ণতা',
+    questions: [
+      {q: 'জনবিস্ফোরণ বলতে কী বোঝায়?', opts: ['জন্মহার কমে গেলে', 'মৃত্যুহার বেড়ে গেলে', 'জন্মহারের তুলনায় মৃত্যুহার হঠাৎ কমে গেলে জনসংখ্যা যখন দ্রুত বেড়ে যায়', 'পরিব্রাজন বন্ধ হলে'], ans: 2, exp: 'চিকিৎসাবিজ্ঞান ও প্রযুক্তির উন্নতির ফলে জন্মহারের তুলনায় মৃত্যুহার হঠাৎ কমে গেলে জনসংখ্যা অতি দ্রুত হারে বেড়ে যায়। একে জনবিস্ফোরণ বলে।'},
+      {q: 'বার্ষিক জনসংখ্যা বৃদ্ধির হার কত শতাংশ ছাড়িয়ে গেলে জনবিস্ফোরণ ঘটেছে বলে ধরা হয়?', opts: ['১ শতাংশ', '২ শতাংশ', '৩ শতাংশ', '৫ শতাংশ'], ans: 1, exp: 'কোনো দেশে বার্ষিক জনসংখ্যা বৃদ্ধির হার ২ শতাংশ ছাড়িয়ে গেলে সেই দেশে জনবিস্ফোরণ ঘটেছে বলে ধরে নেওয়া হয়।'},
+      {q: '\'জনসংখ্যা অভিক্ষেপ\' কী কাজে লাগে?', opts: ['অতীত জনসংখ্যা গুনতে', 'পৃথিবীর ক্রমবর্ধমান জনসংখ্যার ভবিষ্যৎ পূর্বাভাস দিতে', 'জমির পরিমাণ মাপতে', 'মৃত্যুহার কমাতে'], ans: 1, exp: 'জনসংখ্যা অভিক্ষেপের দ্বারা পৃথিবীর বা কোনো দেশের ক্রমবর্ধমান জনসংখ্যার ভবিষ্যৎ পূর্বাভাস দেওয়া যায়।'},
+      {q: '\'কাম্য জনসংখ্যা\' বলতে কী বোঝায়?', opts: ['যখন দেশের জনসংখ্যা সবচেয়ে বেশি থাকে', 'যখন দেশের জনসংখ্যা সবচেয়ে কম থাকে', 'যখন দেশের মোট সম্পদের সাপেক্ষে ঠিক যতটা জনসংখ্যা প্রয়োজন ততটাই থাকে এবং মাথাপিছু আয় সর্বোচ্চ হয়', 'যখন সবাই শিক্ষিত হয়'], ans: 2, exp: 'কাম্য জনসংখ্যা হলো এমন এক আদর্শ অবস্থা যেখানে একটি দেশের উপলব্ধ সম্পদের সর্বোচ্চ ব্যবহারের জন্য ঠিক যতটুকু জনসংখ্যার প্রয়োজন, ততটুকুই থাকে।'},
+      {q: '\'জনাকীর্ণতা\' কখন সৃষ্টি হয়?', opts: ['যখন প্রাকৃতিক সম্পদের তুলনায় জনসংখ্যা অনেক কম থাকে', 'যখন কোনো দেশের সম্পদের তুলনায় জনসংখ্যা অনেক বেশি হয়ে যায়', 'যখন জন্মহার ও মৃত্যুহার সমান থাকে', 'যখন মানুষ পরিব্রাজন করে'], ans: 1, exp: 'কোনো দেশের প্রাকৃতিক সম্পদ ও অর্থনৈতিক অবস্থার তুলনায় জনসংখ্যা খুব বেশি হয়ে গেলে এই অবস্থাকে জনাকীর্ণতা বলে।'},
+      {q: '\'জনবিরলতা\' বা \'জনস্বল্পতা\' কী?', opts: ['যখন জনসংখ্যা অতিরিক্ত বাড়ে', 'যখন প্রাকৃতিক সম্পদের তুলনায় জনসংখ্যা অনেক কম থাকে', 'যখন কেবল বৃদ্ধদের সংখ্যা বেশি থাকে', 'যখন শিশু মৃত্যুহার শূন্য হয়'], ans: 1, exp: 'কোনো দেশের বিপুল প্রাকৃতিক সম্পদের তুলনায় যদি জনসংখ্যা খুব কম হয়, তবে তাকে জনবিরলতা বলে।'},
+      {q: 'গ্রামীণ অঞ্চলে অতিরিক্ত জনসংখ্যার কারণে যে জনাকীর্ণতা ঘটে তাকে কী বলা হয়?', opts: ['পরম জনাকীর্ণতা', 'আপেক্ষিক জনাকীর্ণতা', 'আঞ্চলিক জনাকীর্ণতা', 'জাতীয় স্তরে জনাকীর্ণতা'], ans: 2, exp: 'দেশের গ্রামীণ অঞ্চলে বিশেষ করে কৃষিজমির উপর যখন জনসংখ্যার চাপ অতিরিক্ত বেড়ে যায়, তখন সেই জনাকীর্ণতাকে আঞ্চলিক জনাকীর্ণতা বলা হয়।'},
+      {q: 'আঞ্চলিক জনাকীর্ণতার একটি প্রধান কারণ কী?', opts: ['শিল্পে উন্নত হওয়া', 'খনিজ সম্পদের প্রাচুর্য', 'গ্রামীণ জনসংখ্যার দ্রুত স্বাভাবিক বৃদ্ধি', 'অকৃষি ক্ষেত্রের বিকাশ'], ans: 2, exp: 'আঞ্চলিক জনাকীর্ণতার অন্যতম প্রধান কারণ হলো গ্রামীণ জনসংখ্যার দ্রুত স্বাভাবিক বৃদ্ধি।'},
+      {q: 'স্থিতিশীল জনসংখ্যার অন্তর্গত একটি দেশের উদাহরণ দাও।', opts: ['ভারত', 'উগান্ডা', 'চিলি', 'সুইডেন'], ans: 3, exp: 'সুইডেনের মতো উন্নত দেশে জন্মহার ও মৃত্যুহার দুই-ই অত্যন্ত কম এবং প্রায় সমান, যার ফলে জনসংখ্যা স্থিতিশীল থাকে।'},
+      {q: 'কোনো দেশের জন্মহার ও মৃত্যুহার প্রায় সমান হলে তাকে কী বলে?', opts: ['জনবিস্ফোরণ', 'জনাকীর্ণতা', 'শূন্য জনসংখ্যা বৃদ্ধি (Zero Population Growth)', 'জনস্বল্পতা'], ans: 2, exp: 'কোনো দেশে যখন জন্মহার এবং মৃত্যুহার প্রায় সমান হয়ে যায়, তখন সেই দেশের জনসংখ্যার আর কোনো স্বাভাবিক বৃদ্ধি ঘটে না। একে শূন্য জনসংখ্যা বৃদ্ধি বলে।'},
+      {q: 'জনসংখ্যা পরিবর্তনের \'বিবর্তন তত্ত্ব\' কে প্রদান করেন?', opts: ['ম্যালথাস', 'থম্পসন (Warren Thompson)', 'জিমারম্যান', 'ওয়েবার'], ans: 1, exp: '১৯২৯ সালে ওয়ারেন থম্পসন সর্বপ্রথম \'জনসংখ্যা বিবর্তন তত্ত্ব\' প্রকাশ করেন।'},
+      {q: 'জনবিবর্তন মডেলের কোন পর্যায়ে জনসংখ্যা সবচেয়ে দ্রুত বৃদ্ধি পায়?', opts: ['প্রথম পর্যায়ে', 'দ্বিতীয় পর্যায়ে', 'তৃতীয় পর্যায়ে', 'চতুর্থ পর্যায়ে'], ans: 1, exp: 'জনবিবর্তন তত্ত্বের দ্বিতীয় পর্যায়ে মৃত্যুহার দ্রুত কমে যায়, কিন্তু জন্মহার বেশি থাকায় জনসংখ্যা অত্যন্ত দ্রুত বৃদ্ধি পায়।'},
+      {q: 'কোনো দেশের জনসংখ্যার স্বাভাবিক বৃদ্ধির হার প্রতি হাজারে ২০-৩০ জনের মধ্যে থাকলে, তাকে কী বলে?', opts: ['গুয়াতেমালা হার', 'থাইল্যান্ড হার', 'চিলি হার', 'ভারত হার'], ans: 2, exp: 'জনসংখ্যার স্বাভাবিক বৃদ্ধির হার প্রতি হাজারে ২০-৩০ জনের মধ্যে থাকলে, তাকে \'চিলি হার\' বলা হয়।'},
+      {q: 'কোনো দেশের জনসংখ্যার স্বাভাবিক বৃদ্ধির হার প্রতি হাজারে ২৫-৩৫ জনের মধ্যে হলে, তাকে কী বলে?', opts: ['চিলি হার', 'গুয়াতেমালা হার', 'থাইল্যান্ড হার', 'নেপাল হার'], ans: 1, exp: 'জনসংখ্যার স্বাভাবিক বৃদ্ধির হার প্রতি হাজারে ২৫ থেকে ৩৫ জনের মধ্যে থাকলে, তাকে \'গুয়াতেমালা হার\' বলা হয়।'},
+      {q: 'জনাকীর্ণতার একটি প্রধান কুফল কী?', opts: ['মাথাপিছু আয় বৃদ্ধি', 'বেকারত্ব বৃদ্ধি এবং পরিকাঠামোর ওপর অত্যধিক চাপ', 'বাসস্থানের প্রাচুর্য', 'ঋণের বোঝা হ্রাস'], ans: 1, exp: 'সম্পদের তুলনায় জনসংখ্যা অতিরিক্ত হয়ে গেলে দেশে ছদ্ম বেকারত্ব বৃদ্ধি পায় এবং পরিকাঠামোর ওপর অত্যধিক চাপ সৃষ্টি হয়।'}
+    ]
+  },
+  7: {
+    name: 'Set 7',
+    icon: '🌍',
+    topic: 'আঞ্চলিক জনতত্ত্ব ও বিবিধ',
+    questions: [
+      {q: 'বিশ্বের একটি অতি বিরল জনবসতিযুক্ত অঞ্চল হলো-', opts: ['গঙ্গা-ব্রহ্মপুত্র সমভূমি', 'পম্পাস অঞ্চল', 'গ্রিনল্যান্ড', 'দক্ষিণ-পূর্ব এশিয়া'], ans: 2, exp: 'অত্যধিক শৈত্যের কারণে সুমেরু অঞ্চলের গ্রিনল্যান্ড হলো বিশ্বের একটি অতি-বিরল জনবসতিপূর্ণ অঞ্চল।'},
+      {q: 'দক্ষিণ আমেরিকার সর্বাধিক জনবহুল দেশটি হলো-', opts: ['পেরু', 'আর্জেন্টিনা', 'কলম্বিয়া', 'ব্রাজিল'], ans: 3, exp: 'দক্ষিণ আমেরিকা মহাদেশের দেশগুলির মধ্যে ব্রাজিল হলো সর্বাধিক জনবহুল দেশ।'},
+      {q: 'পৃথিবীর মোট জনসংখ্যার সাপেক্ষে অনুন্নত ও উন্নয়নশীল দেশে বসবাসকারী জনসংখ্যার পরিমাণ প্রায় কত?', opts: ['৫০%', '৬০%', '৭০%', '৮০%'], ans: 3, exp: 'পৃথিবীর মোট জনসংখ্যার প্রায় ৮০ শতাংশ মানুষ অনুন্নত ও উন্নয়নশীল দেশগুলিতে বসবাস করে।'},
+      {q: 'এশিয়া মহাদেশের গড় জনঘনত্ব প্রতি বর্গকিলোমিটারে প্রায় কত?', opts: ['৫০ জন', '৭২ জন', '৯৬.৪ জন', '১২০ জন'], ans: 2, exp: 'পৃথিবীর সবচেয়ে বেশি জনঘনত্বপূর্ণ মহাদেশ হলো এশিয়া, যেখানে গড় জনঘনত্ব প্রায় ৯৬.৪ জন।'},
+      {q: 'কোনো একটি নির্দিষ্ট অঞ্চলে জন্মহার ও মৃত্যুহারের পার্থক্যের শতকরা হারকে কী বলে?', opts: ['মোট জনসংখ্যা', 'জনসংখ্যা বৃদ্ধির হার (Population Growth Rate)', 'জনসংখ্যার বন্টন', 'কাম্য জনসংখ্যা'], ans: 1, exp: 'একটি নির্দিষ্ট সময়ে কোনো অঞ্চলের জন্মহার এবং মৃত্যুহারের মধ্যে যে পার্থক্য থাকে, তাকে শতকরা হিসাবে প্রকাশ করলে জনসংখ্যা বৃদ্ধির হার পাওয়া যায়।'},
+      {q: 'ইউরোপ মহাদেশের একটি জনবহুল ও উন্নত দেশ কোনটি?', opts: ['নরওয়ে', 'সুইডেন', 'জার্মানি', 'গ্রিনল্যান্ড'], ans: 2, exp: 'জার্মানি ইউরোপের একটি অত্যন্ত উন্নত ও জনঘনত্বপূর্ণ দেশ।'},
+      {q: 'জনসংখ্যা বৃদ্ধির বার্ষিক হার কম এমন একটি দেশ হলো-', opts: ['ভারত', 'চিন', 'বাংলাদেশ', 'জার্মানি'], ans: 3, exp: 'ইউরোপের উন্নত দেশ যেমন জার্মানিতে জীবনযাত্রার উচ্চমানের কারণে জন্মহার অত্যন্ত কম।'},
+      {q: 'আফ্রিকা মহাদেশের একটি অত্যন্ত জনবহুল দেশ কোনটি?', opts: ['মিশর', 'নাইজেরিয়া', 'সুদান', 'ইথিওপিয়া'], ans: 1, exp: 'আফ্রিকা মহাদেশের দেশগুলির মধ্যে নাইজেরিয়া হলো সবচেয়ে বেশি জনবহুল দেশ।'},
+      {q: 'উন্নত দেশ থেকে বুদ্ধিজীবী ও মেধাবী মানুষ অন্যত্র চলে গেলে তাকে কী বলে?', opts: ['ব্রেন গেন', 'ব্রেন ড্রেন (Brain Drain)', 'দৈনিক পরিব্রাজন', 'ট্রান্সহিউম্যানস'], ans: 1, exp: 'উন্নয়নশীল দেশ থেকে উন্নত শিক্ষা ও পেশার তাগিদে বুদ্ধিজীবী মানুষ উন্নত দেশে চলে গেলে, সেই মেধাপাচারকে ব্রেন ড্রেন বলে।'},
+      {q: 'ভারতে লিঙ্গ অনুপাত নির্ণয়ের সূত্রটি কী?', opts: ['(মোট নারীর সংখ্যা / মোট পুরুষের সংখ্যা) × 100', '(মোট নারীর সংখ্যা / মোট পুরুষের সংখ্যা) × 1000', '(মোট পুরুষের সংখ্যা / মোট নারীর সংখ্যা) × 100', '(মোট পুরুষের সংখ্যা / মোট নারীর সংখ্যা) × 1000'], ans: 1, exp: 'ভারতবর্ষে লিঙ্গ অনুপাত বলতে প্রতি হাজার পুরুষের সাপেক্ষে নারীর সংখ্যা হিসাব করা হয়।'},
+      {q: 'কোন মহাদেশে পৃথিবীর মোট স্থলভাগের প্রায় ২৪ শতাংশ বিস্তৃত থাকলেও, মোট জনসংখ্যার মাত্র ১৪.৯৫ শতাংশ বাস করে?', opts: ['এশিয়া', 'উত্তর আমেরিকা', 'আফ্রিকা', 'ইউরোপ'], ans: 2, exp: 'আফ্রিকার মতো বিশাল মহাদেশে পৃথিবীর মোট জনসংখ্যার মাত্র ১৪.৯৫ শতাংশ বণ্টিত।'},
+      {q: 'শিল্পবিপ্লবের সময় পৃথিবীর মোট জনসংখ্যা ছিল প্রায়-', opts: ['৪৫ কোটি', '৫৪ কোটি', '৬০ কোটি', '৬৫ কোটি'], ans: 1, exp: 'অষ্টাদশ শতাব্দীর মাঝামাঝি যখন শিল্পবিপ্লব শুরু হয়, তখন সারা পৃথিবীর মোট জনসংখ্যা ছিল আনুমানিক ৫৪ কোটি।'},
+      {q: '২০১১ সালের আদমশুমারি অনুসারে আমেরিকা যুক্তরাষ্ট্রে প্রতি হাজার পুরুষে নারীর সংখ্যা কত?', opts: ['৯৪০ জন', '৯১১ জন', '১০৫৮ জন', '১১৫০ জন'], ans: 2, exp: '২০১১ সালের পরিসংখ্যান অনুযায়ী আমেরিকা যুক্তরাষ্ট্রে প্রতি হাজার পুরুষে নারীর সংখ্যা ছিল ১০৫৮ জন।'},
+      {q: 'কোন অঞ্চলে মানুষের বণ্টনগত তারতম্যের সূচক কী?', opts: ['কাম্য জনসংখ্যা', 'জনাকীর্ণতা', 'জনঘনত্ব (Population Density)', 'মানুষ-জমি অনুপাত'], ans: 2, exp: 'কোনো দেশ বা অঞ্চলের জনসংখ্যার বণ্টনের তারতম্যের সূচক হলো জনঘনত্ব।'},
+      {q: 'বিশ্বের একটি জনবিরল দেশ হলো-', opts: ['অস্ট্রেলিয়া', 'ইথিওপিয়া', 'জার্মানি', 'উগান্ডা'], ans: 0, exp: 'আয়তনের তুলনায় লোকবসতি কম হওয়ার কারণে অস্ট্রেলিয়া হলো বিশ্বের একটি উল্লেখযোগ্য জনবিরল দেশ।'}
+    ]
+  }
+};
+
+// ============================================================
+//  গ্লোবাল ভেরিয়েবল
+// ============================================================
+const LABELS = ['ক', 'খ', 'গ', 'ঘ'];
+let currentSetId = 1;
+let cur = 0, score = 0, wrong = 0, answered = false, timerInterval, timeLeft = 10 * 60;
+let userAnswers = [];
+let isLoggedIn = false;
+let currentUser = null;
+let pendingSetId = null;
+
+// ============================================================
+//  হাব পেজ বিল্ড
+// ============================================================
+function buildHub() {
+  const grid = document.getElementById('setGrid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= TOTAL_SETS; i++) {
+    const set = allSets[i];
+    const card = document.createElement('div');
+    card.className = 'set-card';
+    
+    // Check if user is logged in and get attempt count
+    let attemptCount = 0;
+    let isLocked = false;
+    if (currentUser) {
+      attemptCount = getAttemptCount(currentUser.username, i);
+      isLocked = attemptCount >= MAX_ATTEMPTS;
+      if (isLocked) card.classList.add('locked');
+    }
+    
+    card.innerHTML = `
+      <div class="icon">${set.icon}</div>
+      <div class="set-num">${set.name}</div>
+      <div class="set-title">${set.topic}</div>
+      <div class="set-meta"><span>১৫ প্রশ্ন</span><span>১০ মিনিট</span></div>
+      ${currentUser ? `<div class="attempt-badge">${isLocked ? '🔒 সম্পূর্ণ' : attemptCount + '/' + MAX_ATTEMPTS}</div>` : ''}
+    `;
+    card.onclick = () => {
+      if (isLocked) {
+        alert(`⚠️ আপনি ${set.name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+        return;
+      }
+      selectSet(i);
+    };
+    grid.appendChild(card);
+  }
+}
+
+function showHub() {
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('timerBox').classList.remove('danger');
+  clearInterval(timerInterval);
+  if (currentUser) {
+    document.getElementById('hubUserInfo').innerHTML = `👤 ${currentUser.username} — Test দিতে সেট সিলেক্ট করো।`;
+  } else {
+    document.getElementById('hubUserInfo').innerHTML = '';
+  }
+  buildHub();
+}
+
+function goToHub() {
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('timerBox').classList.remove('danger');
+  clearInterval(timerInterval);
+  isLoggedIn = false;
+  currentUser = null;
+  buildHub();
+}
+
+// ============================================================
+//  সেট সিলেক্ট - সবসময় লগইন চেক
+// ============================================================
+function selectSet(id) {
+  currentSetId = id;
+  const set = allSets[id];
+  pendingSetId = id;
+  document.getElementById('loginSetName').textContent = `📚 ${set.name} — ${set.topic}`;
+  
+  // Check if already logged in
+  if (currentUser) {
+    const attemptCount = getAttemptCount(currentUser.username, id);
+    if (attemptCount >= MAX_ATTEMPTS) {
+      alert(`⚠️ আপনি ${set.name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+      return;
+    }
+    startQuiz(id);
+    return;
+  }
+  
+  document.getElementById('loginOverlay').classList.add('active');
+  document.getElementById('loginUsername').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('limitInfo').style.display = 'none';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginUsername').focus();
+}
+
+// ============================================================
+//  লগইন ফাংশন
+// ============================================================
+function doLoginFromSet() {
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const errorEl = document.getElementById('loginError');
+  const limitInfo = document.getElementById('limitInfo');
+  const loginBtn = document.getElementById('loginBtn');
+
+  if (!username || !password) {
+    errorEl.textContent = '❌ দয়া করে ইউজারনেম ও পাসওয়ার্ড দিন।';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const user = userData.find(u => u.username === username && u.password === password);
+  if (user) {
+    const setId = pendingSetId || currentSetId;
+    const setAttempts = getAttemptCount(username, setId);
+    if (setAttempts >= MAX_ATTEMPTS) {
+      limitInfo.style.display = 'block';
+      document.getElementById('limitMsg').textContent = `আপনি এই অ্যাকাউন্ট দিয়ে ${allSets[setId].name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর Test দেওয়া সম্ভব নয়।`;
+      errorEl.style.display = 'none';
+      loginBtn.disabled = true;
+      return;
+    }
+    
+    isLoggedIn = true;
+    currentUser = user;
+    errorEl.style.display = 'none';
+    limitInfo.style.display = 'none';
+    loginBtn.disabled = false;
+    document.getElementById('loginOverlay').classList.remove('active');
+    
+    document.getElementById('hubUserInfo').innerHTML = `👤 ${currentUser.username} — Test দিতে সেট সিলেক্ট করো।`;
+    
+    startQuiz(pendingSetId || currentSetId);
+  } else {
+    errorEl.textContent = '❌ ভুল ইউজারনেম বা পাসওয়ার্ড। আবার চেষ্টা করুন।';
+    errorEl.style.display = 'block';
+    limitInfo.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLoginFromSet();
+  });
+  document.getElementById('loginUsername').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLoginFromSet();
+  });
+  buildHub();
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+});
+
+// ============================================================
+//  কুইজ ফাংশন
+// ============================================================
+function startQuiz(setId) {
+  if (!isLoggedIn || !currentUser) return;
+  
+  const setAttempts = getAttemptCount(currentUser.username, setId);
+  if (setAttempts >= MAX_ATTEMPTS) {
+    alert(`⚠️ আপনি এই সেটের সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+    return;
+  }
+  
+  incrementAttempt(currentUser.username, setId);
+  
+  cur = 0; score = 0; wrong = 0; answered = false;
+  timeLeft = 10 * 60; userAnswers = [];
+  document.getElementById('hubPage').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('testArea').classList.remove('hidden');
+  document.getElementById('timerBox').classList.remove('danger');
+  
+  const set = allSets[setId];
+  document.getElementById('testSetLabel').textContent = set.name;
+  document.getElementById('testSetName').textContent = 'মানবীয় ভূগোল';
+  document.getElementById('testTopic').textContent = set.topic;
+  
+  // Update retry button
+  document.getElementById('retryBtn').disabled = false;
+  
+  clearInterval(timerInterval);
+  timerInterval = setInterval(tick, 1000);
+  loadQ();
+}
+
+function tick() {
+  timeLeft--;
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  document.getElementById('timerDisplay').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  if (timeLeft <= 60) document.getElementById('timerBox').classList.add('danger');
+  if (timeLeft <= 0) { clearInterval(timerInterval); showResult(); }
+}
+
+function loadQ() {
+  answered = false;
+  const set = allSets[currentSetId];
+  const q = set.questions[cur];
+  document.getElementById('qNum').textContent = 'প্রশ্ন ' + (cur + 1) + ' / ' + set.questions.length;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('progressFill').style.width = ((cur + 1) / set.questions.length * 100) + '%';
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').textContent = cur === set.questions.length - 1 ? 'ফলাফল দেখো' : 'পরবর্তী →';
+  document.getElementById('nextBtn').onclick = nextQ;
+  document.getElementById('explanation').classList.remove('show');
+
+  const opts = document.getElementById('qOpts');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<div class="opt-circle">' + LABELS[i] + '</div><div class="opt-text">' + o + '</div>';
+    btn.onclick = () => answer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function answer(i) {
+  if (answered) return;
+  answered = true;
+  const set = allSets[currentSetId];
+  const q = set.questions[cur];
+  userAnswers[cur] = i;
+  const btns = document.querySelectorAll('.opt');
+  btns.forEach(b => b.classList.add('disabled'));
+  btns[q.ans].classList.add('correct');
+  if (i !== q.ans) { btns[i].classList.add('wrong'); wrong++; }
+  else score++;
+  document.getElementById('scoreShow').textContent = 'সঠিক: ' + score + ' | ভুল: ' + wrong;
+  document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+  document.getElementById('explanation').classList.add('show');
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQ() {
+  const set = allSets[currentSetId];
+  cur++;
+  if (cur >= set.questions.length) { clearInterval(timerInterval); showResult(); return; }
+  loadQ();
+}
+
+function showResult() {
+  document.getElementById('testArea').classList.add('hidden');
+  const rw = document.getElementById('resultWrap');
+  rw.classList.add('show');
+  const set = allSets[currentSetId];
+  const pct = Math.round(score / set.questions.length * 100);
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('rbCorrect').textContent = score;
+  document.getElementById('rbWrong').textContent = wrong;
+  document.getElementById('rbPct').textContent = pct + '%';
+  
+  const remaining = MAX_ATTEMPTS - (getAttemptCount(currentUser.username, currentSetId) || 0);
+  document.getElementById('attemptInfo').innerHTML = `👤 ${currentUser.username} — ${set.name}: বাকি আছে <strong>${remaining}</strong> বার Test দেওয়ার সুযোগ (সর্বোচ্চ ${MAX_ATTEMPTS} বার)`;
+  
+  // Disable retry if no attempts left
+  document.getElementById('retryBtn').disabled = remaining <= 0;
+  
+  const grades = [
+    [90, '🌟', 'অসাধারণ!'],
+    [70, '👍', 'খুব ভালো!'],
+    [50, '📚', 'ভালো চেষ্টা!'],
+    [0, '💪', 'চেষ্টা চালিয়ে যাও!']
+  ];
+  const g = grades.find(x => pct >= x[0]);
+  document.getElementById('resultIcon').textContent = g[1];
+  document.getElementById('resultGrade').textContent = g[2] + ' (' + set.topic + ')';
+}
+
+function retryQuiz() {
+  const setId = currentSetId;
+  const remaining = MAX_ATTEMPTS - (getAttemptCount(currentUser.username, setId) || 0);
+  if (remaining <= 0) {
+    alert(`⚠️ আপনি ${allSets[setId].name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+    return;
+  }
+  document.getElementById('resultWrap').classList.remove('show');
+  startQuiz(setId);
+}
+
+function showReview() {
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('testArea').classList.remove('hidden');
+  cur = 0;
+  loadReview();
+}
+
+function loadReview() {
+  const set = allSets[currentSetId];
+  if (cur >= set.questions.length) { 
+    document.getElementById('testArea').classList.add('hidden'); 
+    document.getElementById('resultWrap').classList.add('show'); 
+    return; 
+  }
+  const q = set.questions[cur];
+  document.getElementById('qNum').textContent = 'Review — প্রশ্ন ' + (cur + 1) + ' / ' + set.questions.length;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('progressFill').style.width = ((cur + 1) / set.questions.length * 100) + '%';
+  document.getElementById('nextBtn').disabled = false;
+  document.getElementById('nextBtn').textContent = cur === set.questions.length - 1 ? 'শেষ করো' : 'পরবর্তী →';
+  document.getElementById('nextBtn').onclick = () => { cur++; loadReview(); };
+
+  const opts = document.getElementById('qOpts');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt disabled';
+    if (i === q.ans) btn.classList.add('correct');
+    else if (userAnswers[cur] === i) btn.classList.add('wrong');
+    btn.innerHTML = '<div class="opt-circle">' + LABELS[i] + '</div><div class="opt-text">' + o + '</div>';
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+  document.getElementById('explanation').classList.add('show');
+  document.getElementById('scoreShow').textContent = 'সবুজ = সঠিক উত্তর';
+}
+</script>
+</body>
+</html>
